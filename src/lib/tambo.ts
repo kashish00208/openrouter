@@ -1,14 +1,5 @@
-/**
- * @file tambo.ts
- * @description Central configuration file for Tambo components and tools
- *
- * This file serves as the central place to register your Tambo components and tools.
- * It exports arrays that will be used by the TamboProvider.
- *
- * Read more about Tambo at https://tambo.co/docs
- */
-
 import { Graph, graphSchema } from "@/components/tambo/graph";
+import { Roadmap, roadmapSchema } from "@/components/tambo/graph";
 import { SelectForm, selectFormSchema } from "@/components/tambo/select-form";
 import type { TamboComponent } from "@tambo-ai/react";
 import { TamboTool } from "@tambo-ai/react";
@@ -20,13 +11,7 @@ import {
   getKPIs,
 } from "@/services/analytics-data";
 
-/**
- * tools
- *
- * This array contains all the Tambo tools that are registered for use within the application.
- * Each tool is defined with its name, description, and expected props. The tools
- * can be controlled by AI to dynamically fetch data based on user interactions.
- */
+
 
 export const tools: TamboTool[] = [
   {
@@ -84,13 +69,31 @@ export const tools: TamboTool[] = [
   },
 ];
 
-/**
- * components
- *
- * This array contains all the Tambo components that are registered for use within the application.
- * Each component is defined with its name, description, and expected props. The components
- * can be controlled by AI to dynamically render UI elements based on user interactions.
- */
+const sampleRoadmap = {
+  ideaName: "Project X",
+  phases: [
+    {
+      id: "phase-1",
+      title: "Discovery",
+      timeline: "Q1",
+      milestones: [
+        { id: "m1", title: "Research", description: "User interviews", status: "planned" },
+        { id: "m2", title: "Prototype", status: "in-progress" }
+      ]
+    },
+    {
+      id: "phase-2",
+      title: "Delivery",
+      timeline: "Q2",
+      milestones: [
+        { id: "m3", title: "Launch", status: "completed" }
+      ]
+    }
+  ]
+};
+
+
+
 export const components: TamboComponent[] = [
   {
     name: "Graph",
@@ -100,11 +103,10 @@ export const components: TamboComponent[] = [
     propsSchema: graphSchema,
   },
   {
-    name: "SelectForm",
+    name: "Board",
     description:
-      "ALWAYS use this component instead of listing options as bullet points in text. Whenever you need to ask the user a question and would normally follow up with bullet points or numbered options, use this component instead. For yes/no or single-choice questions, use mode='single'. For questions where the user can select multiple options, use mode='multi' (default). Each group has a label (the question) and options (the choices). Examples: 'Would you like to continue?' with Yes/No options, or 'Which regions interest you?' with multiple region options.",
-    component: SelectForm,
-    propsSchema: selectFormSchema,
-  },
-  // Add more components here
+      "",
+    component: Roadmap,
+    propsSchema: roadmapSchema
+  }
 ];

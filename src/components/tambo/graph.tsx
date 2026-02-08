@@ -145,24 +145,12 @@ export const graphSchema = z.object({
     .describe("Additional CSS classes for styling"),
 });
 
-/**
- * TypeScript type inferred from the Zod schema
- */
+
 export type GraphProps = z.infer<typeof graphSchema>;
 
-/**
- * TypeScript type inferred from the Zod schema
- */
+
 export type GraphDataType = z.infer<typeof graphDataSchema>;
 
-/**
- * Default colors for the Graph component.
- *
- * Color handling: our v4 theme defines CSS variables like `--border`,
- * `--muted-foreground`, and `--chart-1` as full OKLCH color values in
- * `globals-v4.css`, so we pass them directly as `var(--token)` to
- * Recharts/SVG props instead of wrapping them in `hsl()`/`oklch()`.
- */
 const defaultColors = [
   "hsl(220, 100%, 62%)", // Blue
   "hsl(160, 82%, 47%)", // Green
@@ -170,27 +158,187 @@ const defaultColors = [
   "hsl(340, 82%, 66%)", // Pink
 ];
 
-/**
- * A component that renders various types of charts using Recharts
- * @component
- * @example
- * ```tsx
- * <Graph
- *   data={{
- *     type: "bar",
- *     labels: ["Jan", "Feb", "Mar"],
- *     datasets: [{
- *       label: "Sales",
- *       data: [100, 200, 300]
- *     }]
- *   }}
- *   title="Monthly Sales"
- *   variant="solid"
- *   size="lg"
- *   className="custom-styles"
- * />
- * ```
- */
+export type RoadmapStatus = "planned" | "in-progress" | "completed";
+
+export interface RoadmapMilestone {
+  id: string;
+  title: string;
+  description?: string;
+  status: RoadmapStatus;
+}
+
+export interface RoadmapPhase {
+  id: string;
+  title: string;
+  timeline?: string;
+  milestones: RoadmapMilestone[];
+}
+
+export interface RoadmapData {
+  ideaName: string;
+  phases: RoadmapPhase[];
+}
+
+export interface RoadmapProps extends React.HTMLAttributes<HTMLDivElement> {
+  data?: RoadmapData;
+  title?: string;
+}
+
+const statusStyles: Record<RoadmapStatus, string> = {
+  planned: "bg-muted text-muted-foreground",
+  "in-progress": "bg-blue-100 text-blue-700",
+  completed: "bg-green-100 text-green-700",
+};
+
+
+export const roadmapDataSchema = z.object({
+  ideaName: z.string().describe("Name of the idea/project"),
+  phases: z
+    .array(
+      z.object({
+        id: z.string().describe("Unique phase id"),
+        title: z.string().describe("Phase title"),
+        timeline: z.string().optional().describe("Optional timeline text"),
+        milestones: z
+          .array(
+            z.object({
+              id: z.string().describe("Unique milestone id"),
+              title: z.string().describe("Milestone title"),
+              description: z.string().optional().describe("Optional description"),
+              status: z
+                .enum(["planned", "in-progress", "completed"])
+                .describe("Milestone status"),
+            }),
+          )
+          .describe("Array of milestones for the phase"),
+      }),
+    )
+    .describe("Phases in the roadmap"),
+});
+
+
+export const roadmapSchema = z.object({
+  data: roadmapDataSchema.optional().describe("Optional roadmap data payload"),
+  title: z
+    .string()
+    .optional()
+    .describe("Title for the roadmap dashboard"),
+  variant: z
+    .enum(["default", "solid", "bordered"])
+    .optional()
+    .describe("Visual style variant of the roadmap"),
+  size: z
+    .enum(["default", "sm", "lg"])
+    .optional()
+    .describe("Size of the roadmap dashboard"),
+  className: z
+    .string()
+    .optional()
+    .describe("Additional CSS classes for styling"),
+});
+
+
+export const Roadmap = React.forwardRef<HTMLDivElement, RoadmapProps>(
+  ({ className, data, title, ...props }, ref) => {
+    if (!data) {
+      return (
+        <div ref={ref} className={cn("rounded-lg border p-6", className)} {...props}>
+          <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
+            <div className="flex gap-1 mb-2">
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce [animation-delay:-0.3s]" />
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce [animation-delay:-0.2s]" />
+              <span className="w-2 h-2 rounded-full bg-current animate-bounce [animation-delay:-0.1s]" />
+            </div>
+            <span className="text-sm">Building roadmap...</span>
+          </div>
+        </div>
+      );
+    }
+
+    if (!Array.isArray(data.phases) || data.phases.length === 0) {
+      return (
+        <div ref={ref} className={cn("rounded-lg border p-6", className)} {...props}>
+          <p className="text-sm text-muted-foreground text-center">
+            No roadmap phases defined yet
+          </p>
+        </div>
+      );
+    }
+
+    return (
+      <div ref={ref} className={cn("rounded-lg border", className)} {...props}>
+        <div className="p-6 space-y-6">
+          {(title || data.ideaName) && (
+            <div>
+              <h2 className="text-xl font-semibold text-foreground">
+                {title ?? data.ideaName}
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Startup execution roadmap
+              </p>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            {data.phases.map((phase, phaseIndex) => (
+              <div
+                key={phase.id}
+                className="rounded-md border p-4 bg-background"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-medium text-foreground">
+                    Phase {phaseIndex + 1}: {phase.title}
+                  </h3>
+                  {phase.timeline && (
+                    <span className="text-xs text-muted-foreground">
+                      {phase.timeline}
+                    </span>
+                  )}
+                </div>
+
+                <ul className="space-y-3">
+                  {phase.milestones.map((milestone) => (
+                    <li
+                      key={milestone.id}
+                      className="flex items-start justify-between gap-4 rounded-md border p-3"
+                    >
+                      <div>
+                        <p className="text-sm font-medium text-foreground">
+                          {milestone.title}
+                        </p>
+                        {milestone.description && (
+                          <p className="text-xs text-muted-foreground">
+                            {milestone.description}
+                          </p>
+                        )}
+                      </div>
+
+                      <span
+                        className={cn(
+                          "text-xs px-2 py-1 rounded-full whitespace-nowrap",
+                          statusStyles[milestone.status],
+                        )}
+                      >
+                        {milestone.status}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
+
+Roadmap.displayName = "Roadmap";
+
+
+
+
+
 export const Graph = React.forwardRef<HTMLDivElement, GraphProps>(
   (
     { className, variant, size, data, title, showLegend = true, ...props },

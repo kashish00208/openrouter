@@ -34,22 +34,11 @@ import type { Suggestion } from "@tambo-ai/react";
 import type { VariantProps } from "class-variance-authority";
 import * as React from "react";
 
-/**
- * Props for the MessageThreadFull component
- */
+
 export interface MessageThreadFullProps extends React.HTMLAttributes<HTMLDivElement> {
-  /**
-   * Controls the visual styling of messages in the thread.
-   * Possible values include: "default", "compact", etc.
-   * These values are defined in messageVariants from "@/components/tambo/message".
-   * @example variant="compact"
-   */
-  variant?: VariantProps<typeof messageVariants>["variant"];
+   variant?: VariantProps<typeof messageVariants>["variant"];
 }
 
-/**
- * A full-screen chat thread component with message history, input, and suggestions
- */
 export const MessageThreadFull = React.forwardRef<
   HTMLDivElement,
   MessageThreadFullProps
@@ -104,11 +93,7 @@ export const MessageThreadFull = React.forwardRef<
           </ThreadContent>
         </ScrollableMessageContainer>
 
-        {/* Message suggestions status */}
-        <MessageSuggestions>
-          <MessageSuggestionsStatus />
-        </MessageSuggestions>
-
+       
         {/* Message input */}
         <div className="px-4 pb-4">
           <MessageInput>
@@ -124,11 +109,6 @@ export const MessageThreadFull = React.forwardRef<
             <MessageInputError />
           </MessageInput>
         </div>
-
-        {/* Message suggestions */}
-        <MessageSuggestions initialSuggestions={defaultSuggestions}>
-          <MessageSuggestionsList />
-        </MessageSuggestions>
       </ThreadContainer>
 
       {/* Thread History Sidebar - rendered last if history is on the right */}

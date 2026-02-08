@@ -397,18 +397,7 @@ export const ComponentsCanvas: React.FC<
         </button>
       </div>
 
-      <div className="absolute bottom-4 right-4 z-50 bg-background rounded-md">
-        {activeCanvasId && (
-          <button
-            onClick={() => activeCanvasId && clearCanvas(activeCanvasId)}
-            className="px-3 py-1.5 border border-gray-200 text-primary hover:text-gray-200 hover:bg-gray-100 dark:border-gray-700 dark:text-gray-200 dark:hover:bg-gray-800 rounded-md shadow-sm flex items-center gap-1.5 text-sm cursor-pointer"
-            title="Clear canvas"
-          >
-            <XIcon className="h-4 w-4" />
-            <span>Clear Canvas</span>
-          </button>
-        )}
-      </div>
+      
 
       <div
         className={cn(
