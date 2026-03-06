@@ -1,11 +1,9 @@
 import express from 'express' 
-
 const app = express()
-
-app.get("/",()=>{
-    console.log("Hello world")
+app.get('/', (req, res) => {
+  res.send('hello world')
 })
 
-app.listen(8080,()=>{
-    "console.log app is working on port no 8080"
+app.listen("8080",()=>{
+    console.log("Server is running on port 8080")
 })
