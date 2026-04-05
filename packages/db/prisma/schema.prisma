@@ -8,50 +8,48 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  email    String @unique
-  password String
-
-  apiKey             ApiKey?
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  password           String
+  apiKey             ApiKey[]
   credit             Int                 @default(0)
   onrampTransactions OnrampTransaction[]
   conversations      Conversation[]
 }
 
 model ApiKey {
-  id       String  @id @default(uuid())
-  apiKey   String  @unique
-  disabled Boolean @default(false)
-
-  user   User   @relation(fields: [userId], references: [id])
-  userId String @unique
+  id              String  @id @default(uuid())
+  name            String
+  apiKey          String  @unique
+  disabled        Boolean @default(false)
+  deleted         Boolean @default(false)
+  creditsConsumed Int     @default(0)
+  user            User    @relation(fields: [userId], references: [id])
+  userId          String  @unique
 
   conversations Conversation[]
 }
 
 model Company {
-  id      String @id @default(uuid())
+  id      String  @id @default(uuid())
   name    String
-  website String @unique
-
-  models Model[]
+  website String  @unique
+  models  Model[]
 }
 
 model Model {
-  id   String @id @default(uuid())
-  name String
-
-  company   Company @relation(fields: [companyId], references: [id])
-  companyId String
-
+  id               String                 @id @default(uuid())
+  name             String
+  slug             String
+  company          Company                @relation(fields: [companyId], references: [id])
+  companyId        String
   providerMappings ModelProviderMapping[]
 }
 
 model Provider {
-  id      String @id @default(uuid())
-  name    String
-  website String @unique
-
+  id            String                 @id @default(uuid())
+  name          String
+  website       String                 @unique
   modelMappings ModelProviderMapping[]
 }
 
