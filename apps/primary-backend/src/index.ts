@@ -2,19 +2,14 @@ import express from 'express'
 import authRouter from './modules/auth/auth.controller'
 
 const app = express()
-
-// Core middleware
 app.use(express.json())
 
-// Health check / root
 app.get('/', (req, res) => {
   res.send('hello world')
 })
 
-// Routes
 app.use('/auth', authRouter)
 
-// Global error handler (important)
 app.use((err: any, req: any, res: any, next: any) => {
   console.error(err)
 
