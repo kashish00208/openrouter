@@ -10,7 +10,6 @@ export abstract class Auth {
       select: {
         id: true,
         email: true,
-        name: true,
         password: true,
       },
     });
@@ -39,14 +38,12 @@ export abstract class Auth {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
       },
       token,
     };
   }
 
   static async signUp({ email, password, name }: AuthModel["signUpBody"]) {
-    // 1. Check if user already exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -55,10 +52,8 @@ export abstract class Auth {
       throw new Error("User already exists");
     }
 
-    // 2. Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 3. Create user
     const user = await prisma.user.create({
       data: {
         email,
@@ -76,7 +71,6 @@ export abstract class Auth {
       throw new Error("JWT_SECRET not defined");
     }
 
-    // 4. Generate token
     const token = jwt.sign(
       { userId: user.id },
       process.env.JWT_SECRET,
