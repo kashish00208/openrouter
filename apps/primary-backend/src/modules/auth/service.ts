@@ -83,3 +83,5 @@ export abstract class Auth {
     };
   }
 }
+
+export default Auth;

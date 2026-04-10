@@ -1,1 +1,0 @@
-{"root":["./src/index.ts","./src/modules/apikeys/index.ts","./src/modules/apikeys/model.ts","./src/modules/apikeys/service.ts","./src/modules/auth/index.ts","./src/modules/auth/models.ts","./src/modules/auth/service.ts"],"version":"5.9.3"}
