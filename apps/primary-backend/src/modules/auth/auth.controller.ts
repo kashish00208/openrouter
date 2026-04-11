@@ -1,11 +1,11 @@
 import { Auth } from "./service";
 import express from 'express'
+import { Request , Response } from 'express';
 
 const router = express.Router()
 
-router.post('/sign-in',async(req,res)=>{
+router.post('/sign-in',async(req:Request,res:Response)=>{
     try{
-        console.log("Hit sign in")
         const response = await Auth.signIn(req.body);
         return res.json(response);
     }catch(err){
@@ -13,7 +13,7 @@ router.post('/sign-in',async(req,res)=>{
     }
 });
 
-router.post('/sign-up',async(req, res)=>{
+router.post('/sign-up',async(req:Request, res:Response)=>{
     try{
         const response = await Auth.signUp(req.body);
         return res.json(response)
